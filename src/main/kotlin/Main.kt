@@ -3,7 +3,7 @@ import kotlin.math.abs
 import kotlin.math.sqrt
 
 val atmPresure = 100100 //Pa
-val standard = 0.0020513 //mg/m3
+val standard = 0.020513 //mg/m3
 fun main(args: Array<String>) {
     val s1 = Sample(4.67, 20.1, 0.126, -0.15)
     val result = getResult(getExpenses(s1), s1)
@@ -32,18 +32,19 @@ private fun getExpenses(sample: Sample): Double {
 private fun getResult(expenses: Double, sample: Sample): Double {
     val filter1 = round(0.09 + (Math.random() / 100))
     var filter2 = round(filter1 + Math.random())
+    var result = 0.0
     while (filter2 > filter1) {
         val concentration =
             round(((filter2 - filter1) * 1000 * atmPresure * (273 + sample.temp)) / (expenses * sample.time * 273 * (atmPresure - sample.presure)))
-        val result = concentration * sample.speed * sample.square
+        result = concentration * sample.speed * sample.square
         if (result > standard) {
-                filter2 = round(filter2 - Math.random() / 1000)
+                filter2 = round(filter2 - Math.random() / 100)
         } else {
             println("Filter = $filter1, Filter2 = $filter2, Концентрация = $concentration")
             return result
         }
     }
-    return 0.0
+    return result
 }
 
 private fun round(value: Double): Double {
