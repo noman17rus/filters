@@ -1,12 +1,12 @@
 import java.math.RoundingMode
 import kotlin.math.sqrt
 
-val atmPresure = 100100
-val standard = 0.021513
+val atmPresure = 100100 //Pa
+val standard = 0.001513 //mg/m3
 fun main(args: Array<String>) {
-    val s1 = Sample(6.22, 27.1, 0.126, 0.15)
-    val result = round(getConcentration(getExpenses(s1), s1) * s1.speed * s1.square)
-    println("Массовый выброс = $result")
+    val s1 = Sample(6.67, 20.1, 0.126, 0.15)
+    val result = getResult(getExpenses(s1), s1)
+    println("Норматив = $standard, Массовый выброс = $result")
 }
 
 private fun getExpenses(sample: Sample): Double {
@@ -28,24 +28,25 @@ private fun getExpenses(sample: Sample): Double {
     return expenses
 }
 
-private fun getConcentration(expenses: Double, sample: Sample): Double {
+private fun getResult(expenses: Double, sample: Sample): Double {
     var check = false
     val filter1 = round(0.09 + (Math.random() / 100))
     var filter2 = round(filter1 + Math.random())
     while (!false) {
         val concentration =
             round(((filter2 - filter1) * 1000 * atmPresure * (273 + sample.temp)) / (expenses * sample.time * 273 * (atmPresure - sample.presure)))
-        if (concentration > standard) {
-            filter2 -= 0.0001
+        val result = concentration * sample.speed * sample.square
+        if (result > standard) {
+            filter2 = round(filter2 - 0.0001)
         } else {
-            println("Filter = $filter1, Filter2 = $filter2")
+            println("Filter = $filter1, Filter2 = $filter2, Концентрация = $concentration")
             check = true
-            return concentration
+            return result
         }
     }
     return 0.0
 }
 
 private fun round(value: Double): Double {
-    return value.toBigDecimal().setScale(4, RoundingMode.UP).toDouble()
+    return value.toBigDecimal().setScale(4, RoundingMode.HALF_UP).toDouble()
 }
