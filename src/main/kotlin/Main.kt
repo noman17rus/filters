@@ -1,18 +1,13 @@
-import Game.Sample
 import java.math.RoundingMode
 import kotlin.math.sqrt
 
 val atmPresure = 100100
 val standard = 0.021513
-
 fun main(args: Array<String>) {
     val s1 = Sample(6.22, 27.1, 0.126, 0.15)
     val result = (getConcentration(getExpenses(s1), s1) * s1.speed * s1.square).toBigDecimal().setScale(6, RoundingMode.UP).toDouble()
     println("Массовый выброс = $result")
 }
-
-private fun generateFilter() = (0.09 + (Math.random() / 100)).toBigDecimal().setScale(4, RoundingMode.UP).toDouble()
-
 private fun getExpenses(sample: Sample): Double {
     var check = false
     var expenses: Double = 0.0
@@ -30,10 +25,9 @@ private fun getExpenses(sample: Sample): Double {
     println("Расход = $expenses")
     return expenses
 }
-
 private fun getConcentration(expenses: Double, sample: Sample): Double {
     var check = false
-    val filter1 = generateFilter()
+    val filter1 = (0.09 + (Math.random() / 100)).toBigDecimal().setScale(4, RoundingMode.UP).toDouble()
     var filter2 = (filter1 + Math.random()).toBigDecimal().setScale(4, RoundingMode.UP).toDouble()
     while (!false) {
         val concentration =
